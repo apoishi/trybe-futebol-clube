@@ -22,7 +22,7 @@ describe('Tests for users', () => {
 
   afterEach(function() { sinon.restore() });
 
-  describe('Tests for the login route', () => {
+  describe('Tests for login route', () => {
     it('User is able to login successfully', async () => {
 
       sinon.stub(User, "findOne").resolves(usersMock as unknown as User);
