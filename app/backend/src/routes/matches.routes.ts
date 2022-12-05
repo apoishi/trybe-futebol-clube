@@ -23,7 +23,10 @@ export default class MatchesRoutes {
     this.route.post(
       '/',
       this._loginMiddleware.tokenValidation,
-      (req: Request, res: Response) => this._matchesController.create(req, res),
+      (req: Request, res: Response) => this._matchesController.createInProgress(req, res),
     );
+
+    this.route.patch('/:id/finish', (req: Request, res: Response) => this._matchesController
+      .updateInProgress(req, res));
   }
 }

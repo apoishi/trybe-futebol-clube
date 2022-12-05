@@ -16,11 +16,17 @@ export default class MatchesController {
     res.status(StatusCodes.OK).json(result);
   }
 
-  public async create(req: Request, res: Response): Promise<void> {
+  public async createInProgress(req: Request, res: Response): Promise<void> {
     const { homeTeam, awayTeam, homeTeamGoals, awayTeamGoals } = req.body;
 
     const result = await this._matchesService
-      .create(homeTeam, awayTeam, homeTeamGoals, awayTeamGoals);
+      .createInProgress(homeTeam, awayTeam, homeTeamGoals, awayTeamGoals);
     res.status(StatusCodes.CREATED).json(result);
+  }
+
+  public async updateInProgress(req: Request, res: Response): Promise<void> {
+    const { id } = req.params;
+    await this._matchesService.updateInProgress(Number(id));
+    res.status(StatusCodes.OK).json({ message: 'Finished' });
   }
 }

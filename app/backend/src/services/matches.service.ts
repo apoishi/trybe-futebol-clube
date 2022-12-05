@@ -29,7 +29,7 @@ export default class MatchesService {
       where: { inProgress: false } }) as unknown as IMatch[];
   }
 
-  public async create(
+  public async createInProgress(
     homeTeam: number,
     awayTeam: number,
     homeTeamGoals: number,
@@ -38,5 +38,9 @@ export default class MatchesService {
     const result = await this._matchModel
       .create({ homeTeam, awayTeam, homeTeamGoals, awayTeamGoals });
     return result;
+  }
+
+  public async updateInProgress(id: number) {
+    await this._matchModel.update({ inProgress: false }, { where: { id } });
   }
 }
