@@ -28,4 +28,15 @@ export default class MatchesService {
         { model: Teams, as: 'teamAway', attributes: { exclude: ['id'] } }],
       where: { inProgress: false } }) as unknown as IMatch[];
   }
+
+  public async create(
+    homeTeam: number,
+    awayTeam: number,
+    homeTeamGoals: number,
+    awayTeamGoals: number,
+  ) {
+    const result = await this._matchModel
+      .create({ homeTeam, awayTeam, homeTeamGoals, awayTeamGoals });
+    return result;
+  }
 }

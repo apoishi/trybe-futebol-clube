@@ -15,4 +15,12 @@ export default class MatchesController {
     }
     res.status(StatusCodes.OK).json(result);
   }
+
+  public async create(req: Request, res: Response): Promise<void> {
+    const { homeTeam, awayTeam, homeTeamGoals, awayTeamGoals } = req.body;
+
+    const result = await this._matchesService
+      .create(homeTeam, awayTeam, homeTeamGoals, awayTeamGoals);
+    res.status(StatusCodes.CREATED).json(result);
+  }
 }
