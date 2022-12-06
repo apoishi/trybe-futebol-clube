@@ -4,17 +4,20 @@ import UsersRoutes from './routes/user.routes';
 import TeamsRoutes from './routes/teams.routes';
 import MatchesRoutes from './routes/matches.routes';
 import errorMiddleware from './middlewares/error.middleware';
+import LeaderboardRoutes from './routes/leaderboard.routes';
 
 class App {
   public app: express.Express;
   private _usersRoutes: UsersRoutes;
   private _teamsRoutes: TeamsRoutes;
   private _matchesRoutes: MatchesRoutes;
+  private _leaderboardRoutes: LeaderboardRoutes;
 
   constructor(
     usersRoutes = new UsersRoutes(),
     teamsRoutes = new TeamsRoutes(),
     matchesRoutes = new MatchesRoutes(),
+    leaderboardRoutes = new LeaderboardRoutes(),
   ) {
     this.app = express();
 
@@ -23,12 +26,14 @@ class App {
     this._usersRoutes = usersRoutes;
     this._teamsRoutes = teamsRoutes;
     this._matchesRoutes = matchesRoutes;
+    this._leaderboardRoutes = leaderboardRoutes;
 
     // Não remover essa rota
     this.app.get('/', (req, res) => res.json({ ok: true }));
     this.app.use('/login', this._usersRoutes.route);
     this.app.use('/teams', this._teamsRoutes.route);
     this.app.use('/matches', this._matchesRoutes.route);
+    this.app.use('/leaderboard', this._leaderboardRoutes.route);
     this.app.use(errorMiddleware);
   }
 
