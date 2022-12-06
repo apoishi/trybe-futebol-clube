@@ -1,12 +1,17 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import UsersService from '../services/users.service';
 import MatchesService from '../services/matches.service';
 
 export default class MatchesController {
-  constructor(private _matchesService = new MatchesService()) { }
+  constructor(
+    private _matchesService = new MatchesService(),
+    private _usersService = new UsersService(),
+  ) { }
 
   public async findAll(req: Request, res: Response): Promise<void> {
     const { inProgress } = req.query;
+
     let result;
     if (!inProgress) {
       result = await this._matchesService.findAll();
@@ -16,12 +21,35 @@ export default class MatchesController {
     res.status(StatusCodes.OK).json(result);
   }
 
-  public async createInProgress(req: Request, res: Response): Promise<void> {
+  public async create(req: Request, res: Response) {
+    const { authorization } = req.headers;
     const { homeTeam, awayTeam, homeTeamGoals, awayTeamGoals } = req.body;
 
+    if (!authorization) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Token must be a valid token' });
+    }
+    await this._usersService.tokenValidation(authorization);
+
+    const findTeams = await this._matchesService.findTeams(homeTeam, awayTeam);
+    if (!findTeams) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: 'There is no team with such id!' });
+    }
+
+    if (homeTeam === awayTeam) {
+      return res.status(StatusCodes.UNPROCESSABLE_ENTITY)
+        .json({ message: 'It is not possible to create a match with two equal teams' });
+    }
+
     const result = await this._matchesService
-      .createInProgress(homeTeam, awayTeam, homeTeamGoals, awayTeamGoals);
-    res.status(StatusCodes.CREATED).json(result);
+      .create(homeTeam, awayTeam, homeTeamGoals, awayTeamGoals);
+    return res.status(StatusCodes.CREATED).json(result);
+  }
+
+  public async update(req: Request, res: Response): Promise<void> {
+    const { id } = req.params;
+    const { homeTeamGoals, awayTeamGoals } = req.body;
+    await this._matchesService.update(homeTeamGoals, awayTeamGoals, Number(id));
+    res.status(StatusCodes.OK).json({ message: 'Match updated' });
   }
 
   public async updateInProgress(req: Request, res: Response): Promise<void> {

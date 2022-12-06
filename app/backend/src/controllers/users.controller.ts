@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import UserService from '../services/user.service';
+import UserService from '../services/users.service';
+import HttpException from '../utils/http.exception';
 
 export default class UserController {
   constructor(private _userService = new UserService()) { }
 
-  public async login(req: Request, res: Response) {
+  public async login(req: Request, res: Response): Promise<void | unknown> {
     const { email, password } = req.body;
 
     const token = await this._userService.login(email, password);
@@ -16,11 +17,13 @@ export default class UserController {
     res.status(StatusCodes.OK).json({ token });
   }
 
-  public async findRole(req: Request, res: Response) {
+  public async loginValidation(req: Request, res: Response): Promise<void | unknown> {
     const { authorization } = req.headers;
+
     if (authorization) {
-      const role = await this._userService.findRole(authorization);
-      res.status(StatusCodes.OK).json({ role });
+      const role = await this._userService.tokenValidation(authorization);
+      return res.status(StatusCodes.OK).json({ role });
     }
+    throw new HttpException(401, 'UNAUTHORIZED', 'Token must be a valid token');
   }
 }
