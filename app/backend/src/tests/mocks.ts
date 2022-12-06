@@ -12,3 +12,34 @@ export const teamsMock = [
   { "id": 1, "teamName": "Avaí/Kindermann" },
   { "id": 2, "teamName": "Bahia" }
 ]
+
+export const matchesMock = [
+    {
+      id: 1,
+      homeTeam: 16,
+      homeTeamGoals: 1,
+      awayTeam: 8,
+      awayTeamGoals: 1,
+      inProgress: false,
+      homeTeamMatch: {
+        teamName: 'São Paulo'
+      },
+      awayTeamMatch: {
+        teamName: 'Grêmio'
+      }
+    },
+    {
+      id: 2,
+      homeTeam: 9,
+      homeTeamGoals: 1,
+      awayTeam: 14,
+      awayTeamGoals: 1,
+      inProgress: false,
+      homeTeamMatch: {
+        teamName: 'Internacional'
+      },
+      awayTeamMatch: {
+        teamName: 'Santos'
+      }
+    }
+  ]
